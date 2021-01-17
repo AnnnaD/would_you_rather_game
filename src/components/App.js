@@ -1,6 +1,7 @@
 import React, { Component } from 'react'
 import { connect } from 'react-redux'
 import { handleInitialData } from '../actions/shared'
+import Home from './Home'
 
 class App extends Component {
   componentDidMount() {
@@ -8,11 +9,41 @@ class App extends Component {
   }
   render() {
     return (
-      <div>
-        Would you rather App
+      <div className="container">
+        <nav className="main_nav">
+          <div className="main_menu">
+            <ul className="list_items">
+              <li>Home</li>
+              <li>New Question</li>
+              <li>Leaderboard</li>
+              {this.props.loading === true
+            ?
+            null
+            :
+            <div className="user_panel">
+              <li>Hello {this.props.authedUser}</li>
+              <li>Logout</li>
+            </div>
+          }
+            </ul>
+          </div>
+        </nav>
+        {this.props.loading === true
+        ?
+        <p>login</p>
+        :
+        <Home />
+      }
       </div>
     );
   }
 }
 
-export default connect()(App)
+function mapStateToProps({authedUser}) {
+  return {
+    authedUser,
+    loading: authedUser === null,
+  }
+}
+
+export default connect(mapStateToProps)(App)
