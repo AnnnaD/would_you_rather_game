@@ -1,8 +1,18 @@
 import React, { Component } from 'react'
 import { connect } from 'react-redux'
 import { formatQuestion } from '../utils/_DATA.js'
+import Poll from './Poll'
 
 class Question extends Component {
+  state = {
+    clicked: false
+  }
+
+  handleClick = () => {
+    this.setState({
+      clicked:true
+    })
+  }
   render() {
     console.log(this.props)
     const { question, authorAvatar } = this.props
@@ -17,9 +27,10 @@ class Question extends Component {
               <div className="content">
                 <h5>Would you rather</h5>
                 <p>...{question.optionOne.text}...</p>
-                <button className="show-pol-btn">show poll</button>
+                <button className="show-pol-btn" onClick={this.handleClick}>show poll</button>
               </div>
             </div>
+            {this.state.clicked ? <Poll question={question} avatar={authorAvatar}/> : null}
         </div>
       </div>
     )
@@ -35,11 +46,11 @@ function mapStateToProps({questions, users, authedUser}, {id}) {
   const authorAvatar = users[question.author].avatarURL
 
   return {
+    user:users[authedUser],
     users,
     questions,
-    question: question
-    ? formatQuestion({optionOneText, optionTwoText, author})
-    : null,
+    authedUser,
+    question: question,
     authorAvatar
   }
 }
