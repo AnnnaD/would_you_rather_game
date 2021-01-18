@@ -2,6 +2,8 @@ import React, { Component } from 'react'
 import { connect } from 'react-redux'
 import { handleInitialData } from '../actions/shared'
 import Home from './Home'
+import SignIn from './SignIn'
+
 
 class App extends Component {
   componentDidMount() {
@@ -30,7 +32,7 @@ class App extends Component {
         </nav>
         {this.props.loading === true
         ?
-        <p>login</p>
+        <SignIn />
         :
         <Home />
       }
