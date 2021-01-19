@@ -2,6 +2,8 @@ import React, { Component } from 'react'
 import { connect } from 'react-redux'
 import { formatQuestion } from '../utils/_DATA.js'
 import Poll from './Poll'
+import Results from './Results'
+
 
 class Question extends Component {
   state = {
@@ -14,8 +16,7 @@ class Question extends Component {
     })
   }
   render() {
-    console.log(this.props)
-    const { question, authorAvatar } = this.props
+    const { question, authorAvatar, activeCategory } = this.props
     return (
       <div>
         <div className="single-question-container">
@@ -30,7 +31,8 @@ class Question extends Component {
                 <button className="show-pol-btn" onClick={this.handleClick}>show poll</button>
               </div>
             </div>
-            {this.state.clicked ? <Poll question={question} avatar={authorAvatar}/> : null}
+            {this.state.clicked && activeCategory==="Unanswered" ? <Poll question={question} avatar={authorAvatar}/> : null}
+            {this.state.clicked && activeCategory==="Answered" ? <Results question={question} avatar={authorAvatar}/> : null}
         </div>
       </div>
     )
@@ -46,7 +48,6 @@ function mapStateToProps({questions, users, authedUser}, {id}) {
   const authorAvatar = users[question.author].avatarURL
 
   return {
-    user:users[authedUser],
     users,
     questions,
     authedUser,

@@ -28,7 +28,7 @@ class Home extends Component {
           <ul>
             {this.props.answers.map((id) => (
               <li key={id}>
-                <Question id={id} />
+                <Question id={id} activeCategory={this.state.questionsCategory}/>
               </li>
             ))}
           </ul>
@@ -38,7 +38,7 @@ class Home extends Component {
           <ul>
             {this.props.questionsIds.map((id) => (
               <li key={id}>
-                <Question id={id} />
+                <Question id={id} activeCategory={this.state.questionsCategory}/>
               </li>
             ))}
           </ul>

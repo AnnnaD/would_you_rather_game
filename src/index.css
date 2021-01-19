@@ -16,3 +16,19 @@ code {
 .active {
   border: 1px solid yellow;
 }
+
+.user-vote {
+  border: 2px solid green;
+}
+
+.vote-badge {
+  background-color: yellow;
+}
+
+.vote-badge.visible {
+  display: block;
+}
+
+.vote-badge.hidden {
+  display: none;
+}

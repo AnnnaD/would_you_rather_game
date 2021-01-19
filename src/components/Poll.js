@@ -1,16 +1,16 @@
 import React, { Component } from 'react'
 import { connect } from 'react-redux'
 import { handleAnswer } from '../actions/shared.js'
+import Results from './Results'
 
 class Poll extends Component {
   state = {
     optionOne:this.props.question.optionOne.text,
     optionTwo:this.props.question.optionTwo.text,
     selectedOpt:'',
-    selectedOptName:''
+    selectedOptName:'',
+    clicked:false
   }
-
-
 
   handleSubmit = (event) => {
     const answer_data = {
@@ -30,25 +30,30 @@ class Poll extends Component {
     })
   }
 
+  handleClick=()=>{
+    this.setState({
+      clicked:true
+    })
+  }
+
   render() {
-    const { question, avatar, answer } = this.props
-    console.log(this.props.answersIds)
+    const { question, avatar, answer, active } = this.props
     return (
-      <div className="single-question-container">
+
       <div className="single-question-container">
         <h4>{question.author} asks:</h4>
           <div className="question-options">
             <div className="photo-container">
             <img src={avatar} alt="author avatar" />
             </div>
-            <div className="content">
+            <form className="content" onSubmit={this.handleSubmit}>
               <h5>Would you rather</h5>
               <input type="radio" name="optionOne" value={this.state.optionOne} onChange={this.handleChange} checked={this.state.selectedOptName===this.state.optionOne}/>{question.optionOne.text}
               <input type="radio" name="optionTwo" value={this.state.optionTwo} onChange={this.handleChange} checked={this.state.selectedOptName===this.state.optionTwo}/>{question.optionTwo.text}
-              <button className="show-pol-btn" onClick={this.handleSubmit}>Submit</button>
-            </div>
+              <button className="show-pol-btn" onClick={this.handleClick}>Submit</button>
+            </form>
           </div>
-      </div>
+          {this.state.clicked ? <Results question={question} avatar={avatar} userAnswer={this.state.selectedOpt} /> : null}
       </div>
     )
   }
@@ -61,7 +66,6 @@ function mapStateToProps({questions, users, authedUser,answer}, {question}) {
     users,
     question,
     authedUser,
-    answersIds:Object.keys(answers).sort((a,b)=>questions[b].timestamp-questions[a].timestamp),
   }
 }
 
