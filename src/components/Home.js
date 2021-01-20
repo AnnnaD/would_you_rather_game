@@ -15,7 +15,7 @@ class Home extends Component {
     })
   }
   render() {
-    // console.log(this.props)
+    console.log(this.props.answers)
     return (
       <div className="questions-section">
         <div className="questions_menu">
@@ -36,9 +36,9 @@ class Home extends Component {
         :
         <div>
           <ul>
-            {this.props.questionsIds.map((id) => (
-              <li key={id}>
-                <Question id={id} activeCategory={this.state.questionsCategory}/>
+            {this.props.questionsIds.map((obj) => (
+              <li key={obj.id}>
+                <Question id={obj.id} activeCategory={this.state.questionsCategory}/>
               </li>
             ))}
           </ul>
@@ -51,10 +51,13 @@ class Home extends Component {
 
 function mapStateToProps({questions, users, authedUser}) {
   const answersObj = users[authedUser].answers
+  const answersIds = Object.keys(answersObj).sort((a,b) => answersObj[b].timestamp - answersObj[a].timestamp)
+  const unanswered = Object.values(questions).filter((q)=>!answersIds.includes(q.id))
   return {
-    questionsIds: Object.keys(questions).sort((a,b) => questions[b].timestamp - questions[a].timestamp),
-    answers: Object.keys(answersObj).sort((a,b) => questions[b].timestamp - questions[a].timestamp),
+    questionsIds: unanswered,
+    answers: answersIds,
     users,
+    authedUser,
   }
 }
 

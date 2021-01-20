@@ -53,7 +53,7 @@ class Poll extends Component {
               <button className="show-pol-btn" onClick={this.handleClick}>Submit</button>
             </form>
           </div>
-          {this.state.clicked ? <Results question={question} avatar={avatar} userAnswer={this.state.selectedOpt} /> : null}
+          {this.state.clicked ? <Results question={question} avatar={avatar} /> : null}
       </div>
     )
   }

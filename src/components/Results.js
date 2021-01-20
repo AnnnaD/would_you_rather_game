@@ -11,7 +11,7 @@ class Results extends Component {
     const optionTwoNumberRounded = optionTwoNumber.toFixed(1)
 
 
-    console.log(this.props.userAnswer)
+    console.log(this.props.optionOneVotes)
     const { question, optionOneVotes, optionTwoVotes, authorFullName, avatar, userAnswer } = this.props
     return (
       <div className="single-question-container">
@@ -44,6 +44,7 @@ function mapStateToProps({questions, users, authedUser}, {question}) {
   const answers = users[authedUser].answers
   const optionOneVotes = questions[question.id].optionOne.votes
   const optionTwoVotes = questions[question.id].optionTwo.votes
+  const userAnswer = optionOneVotes.includes(authedUser) ? "optionOne" : "optionTwo"
 
   return {
     users,
@@ -51,7 +52,8 @@ function mapStateToProps({questions, users, authedUser}, {question}) {
     authedUser,
     optionOneVotes,
     optionTwoVotes,
-    authorFullName
+    authorFullName,
+    userAnswer,
   }
 }
 
