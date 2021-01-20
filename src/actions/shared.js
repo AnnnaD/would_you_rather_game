@@ -5,6 +5,11 @@ import { setAuthedUser } from '../actions/authedUser'
 import { handleSaveAnswer } from '../actions/questions'
 import { handleSaveUserAnswer } from '../actions/users'
 import { saveQuestionAnswer } from '../utils/_DATA.js'
+import { saveQuestion } from '../utils/_DATA.js'
+import { addQuestion } from '../actions/questions'
+import { addUserQuestion } from '../actions/users'
+
+
 // const AUTHED_ID = 'tylermcginnis'
 
 export function handleInitialData() {
@@ -25,6 +30,18 @@ export function handleAnswer(answer) {
     return saveQuestionAnswer(answer).then(()=>{
       dispatch(handleSaveAnswer(answer))
       dispatch(handleSaveUserAnswer(answer))
+    }).catch((error) => {
+      console.log("Promise rejected")
+    })
+  }
+}
+
+export function handleAddQuestion(question) {
+  return (dispatch, getState) => {
+    const { authedUser } = getState()
+    return saveQuestion(question).then((question)=>{
+      dispatch(addQuestion(question))
+      dispatch(addUserQuestion(question))
     }).catch((error) => {
       console.log("Promise rejected")
     })

@@ -3,6 +3,7 @@ import { connect } from 'react-redux'
 import { handleInitialData } from '../actions/shared'
 import Home from './Home'
 import SignIn from './SignIn'
+import NewQuestion from './NewQuestion'
 
 
 class App extends Component {
