@@ -1,5 +1,7 @@
 import React, { Component } from 'react'
 import { connect } from 'react-redux'
+import { Redirect } from 'react-router-dom'
+import { Link } from 'react-router-dom'
 import { handleAnswer } from '../actions/shared.js'
 import Results from './Results'
 
@@ -9,7 +11,8 @@ class Poll extends Component {
     optionTwo:this.props.question.optionTwo.text,
     selectedOpt:'',
     selectedOptName:'',
-    clicked:false
+    clicked:false,
+    toResult: false
   }
 
   handleSubmit = (event) => {
@@ -19,8 +22,10 @@ class Poll extends Component {
       answer:this.state.selectedOpt
     }
     event.preventDefault();
-    // console.log(answer_data)
     this.props.dispatch(handleAnswer(answer_data))
+    this.setState({
+      toResult: this.props.qid ? false : true,
+    })
   }
 
   handleChange= (event) => {
@@ -32,40 +37,58 @@ class Poll extends Component {
 
   handleClick=()=>{
     this.setState({
-      clicked:true
+      clicked:true,
     })
   }
 
-  render() {
-    const { question, avatar, answer, active } = this.props
-    return (
+  isDisabled = () => {
+    const { selectedOpt } = this.state
+    return selectedOpt === ''
+  }
 
+  render() {
+
+    const {question, users}=this.props
+    const { id } = question
+    const { toResult } =this.state
+    const avatar = users[question.author].avatarURL
+
+if(toResult===true){
+  return <Redirect to={`/answered/${id}`} />
+}
+
+
+    return (
       <div className="single-question-container">
         <h4>{question.author} asks:</h4>
           <div className="question-options">
             <div className="photo-container">
-            <img src={avatar} alt="author avatar" />
+              <img src={avatar} />
             </div>
             <form className="content" onSubmit={this.handleSubmit}>
               <h5>Would you rather</h5>
               <input type="radio" name="optionOne" value={this.state.optionOne} onChange={this.handleChange} checked={this.state.selectedOptName===this.state.optionOne}/>{question.optionOne.text}
               <input type="radio" name="optionTwo" value={this.state.optionTwo} onChange={this.handleChange} checked={this.state.selectedOptName===this.state.optionTwo}/>{question.optionTwo.text}
-              <button className="show-pol-btn" onClick={this.handleClick}>Submit</button>
+              <button disabled={this.isDisabled()}>submit</button>
             </form>
+            </div>
           </div>
-          {this.state.clicked ? <Results question={question} avatar={avatar} /> : null}
-      </div>
     )
   }
 }
 
-function mapStateToProps({questions, users, authedUser,answer}, {question}) {
-  const answers=users[authedUser].answers
+function mapStateToProps({questions, users, authedUser, answer}, ownprops) {
+  const questionId = ownprops.match.params.id
+  const question = questions[questionId]
+  const user = users[authedUser]
 
   return {
     users,
-    question,
+    questions,
     authedUser,
+    question,
+    user,
+    answer
   }
 }
 

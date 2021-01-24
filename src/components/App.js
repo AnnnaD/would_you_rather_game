@@ -1,10 +1,15 @@
-import React, { Component } from 'react'
+import React, { Component, Fragment } from 'react'
+import { BrowserRouter as Router, Route } from 'react-router-dom'
 import { connect } from 'react-redux'
 import { handleInitialData } from '../actions/shared'
 import Home from './Home'
 import SignIn from './SignIn'
 import NewQuestion from './NewQuestion'
 import Leaderboard from './Leaderboard'
+import Nav from './Nav'
+import Poll from './Poll'
+import Results from './Results'
+
 
 
 class App extends Component {
@@ -14,30 +19,22 @@ class App extends Component {
   render() {
     return (
       <div className="container">
-        <nav className="main_nav">
-          <div className="main_menu">
-            <ul className="list_items">
-              <li>Home</li>
-              <li>New Question</li>
-              <li>Leaderboard</li>
-              {this.props.loading === true
-            ?
-            null
-            :
-            <div className="user_panel">
-              <li>Hello {this.props.authedUser}</li>
-              <li>Logout</li>
-            </div>
-          }
-            </ul>
-          </div>
-        </nav>
-        {this.props.loading === true
-        ?
-        <SignIn />
-        :
-        <Leaderboard />
-      }
+      <Router>
+      <Nav />
+      {this.props.loading === true
+      ?
+      <SignIn />
+      :
+      <div>
+        <Route path='/' exact component={ Home } />
+        <Route path='/questions/:id' component={ Poll } />
+        <Route path='/answered/:id' component={ Results } />
+        <Route path='/new' component={ NewQuestion} />
+        <Route path='/leaderboard' component = { Leaderboard } />
+      </div>
+    }
+      </Router>
+
       </div>
     );
   }

@@ -1,5 +1,6 @@
 import React, { Component } from 'react'
 import { connect } from 'react-redux'
+import { Link } from 'react-router-dom'
 import { formatQuestion } from '../utils/_DATA.js'
 import Poll from './Poll'
 import Results from './Results'
@@ -16,7 +17,10 @@ class Question extends Component {
     })
   }
   render() {
+    console.log(this.props.question.id)
     const { question, authorAvatar, activeCategory } = this.props
+    const { id } = this.props.question
+    const question_id = id
     return (
       <div>
         <div className="single-question-container">
@@ -28,11 +32,16 @@ class Question extends Component {
               <div className="content">
                 <h5>Would you rather</h5>
                 <p>...{question.optionOne.text}...</p>
-                <button className="show-pol-btn" onClick={this.handleClick}>show poll</button>
+                {activeCategory==="Unanswered"
+                ?
+                <Link to={`/questions/${id}`} className="show-pol-btn">show poll</Link>
+                :
+                <Link to={`/answered/${id}`} className="show-pol-btn">show poll</Link>
+              }
               </div>
             </div>
-            {this.state.clicked && activeCategory==="Unanswered" ? <Poll question={question} avatar={authorAvatar}/> : null}
-            {this.state.clicked && activeCategory==="Answered" ? <Results question={question} avatar={authorAvatar}/> : null}
+            {this.state.clicked && activeCategory==="Unanswered" ? <Poll /> : null}
+            {this.state.clicked && activeCategory==="Answered" ? <Results /> : null}
         </div>
       </div>
     )

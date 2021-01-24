@@ -1,4 +1,5 @@
 import React, { Component } from 'react'
+import { Redirect } from 'react-router-dom'
 import { connect } from 'react-redux'
 import { handleAddQuestion } from '../actions/shared'
 
@@ -8,7 +9,8 @@ class NewQuestion extends Component {
     question: {
       optionOne:'',
       optionTwo:''
-    }
+    },
+    toHome:false
   }
 
   handleChange = (event) => {
@@ -41,17 +43,25 @@ class NewQuestion extends Component {
         ...currState.question,
         optionOne:'',
         optionTwo:''
-      }
+      },
+      toHome: this.props.question ? false : true,
     }))
   }
 
+  isDisabled = () => {
+    const { optionOne, optionTwo} = this.state.question
+    return optionOne === '' || optionTwo === ''
+  }
+
   render() {
-    // console.log(this.props)
+    const { toHome } = this.state
     const { optionOne, optionTwo } = this.state.question
     const questionOneLeft = 50 - optionOne.length
     const questionTwoLeft = 50 - optionTwo.length
 
-{/* todo: Redirect to / if submited*/}
+    if(toHome === true) {
+      return <Redirect to='/' />
+    }
 
     return (
       <div>
@@ -65,7 +75,7 @@ class NewQuestion extends Component {
           {questionTwoLeft <= 40 && (
             <div>{questionTwoLeft}</div>
           )}
-          <button>Submit</button>
+          <button disabled={this.isDisabled()}>Submit</button>
         </form>
       </div>
     )

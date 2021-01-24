@@ -2,58 +2,49 @@ import React, { Component } from 'react'
 import { connect } from 'react-redux'
 
 class Results extends Component {
-
-
   render() {
-    const optionOneNumber = this.props.optionOneVotes.length/3*100
+
+    const { question, optionOneVotes, optionTwoVotes, userAnswer } = this.props
+
+    const optionOneNumber = optionOneVotes.length/3*100
     const optionOneNumberRounded = optionOneNumber.toFixed(1)
-    const optionTwoNumber = this.props.optionTwoVotes.length/3*100
+    const optionTwoNumber = optionTwoVotes.length/3*100
     const optionTwoNumberRounded = optionTwoNumber.toFixed(1)
 
-
-    console.log(this.props.optionOneVotes)
-    const { question, optionOneVotes, optionTwoVotes, authorFullName, avatar, userAnswer } = this.props
     return (
       <div className="single-question-container">
-        <p>Added by: {authorFullName}</p>
-        <div>
-          <img src={avatar} />
+        <div className={userAnswer==='optionOne' ? 'user-vote' : ''}>
+          <div className={`vote-badge ${userAnswer==='optionOne'? 'visible':'hidden'}`}>your vote</div>
+          <p>Would you rather {question.optionOne.text}</p>
+          <p>{optionOneVotes.length}</p>
+          <p>{optionOneNumberRounded}%</p>
         </div>
-        <div className="content">
-          <div className={userAnswer === "optionOne" ? "user-vote" : ""}>
-            <div className={`vote-badge ${userAnswer==="optionOne" ? "visible" : "hidden"}`}>your vote</div>
-            <p>Would you rather {question.optionOne.text}</p>
-            <p>{optionOneNumberRounded}</p>
-            <p>{optionOneVotes.length} of 3</p>
-          </div>
-          <div className={userAnswer === "optionTwo" ? "user-vote" : ""}>
-            <div className={`vote-badge ${userAnswer==="optionTwo" ? "visible" : "hidden"}`}>your vote</div>
-            <p>Would you rather {question.optionTwo.text}</p>
-            <p>{optionTwoNumberRounded}</p>
-            <p>{optionTwoVotes.length} of 3</p>
-          </div>
+        <div className={userAnswer==='optionTwo' ? 'user-vote' : ''}>
+          <div className={`vote-badge ${userAnswer==='optionTwo'? 'visible':'hidden'}`}>your vote</div>
+          <p>Would you rather {question.optionTwo.text}</p>
+          <p>{optionTwoVotes.length}</p>
+          <p>{optionTwoNumberRounded}%</p>
         </div>
       </div>
     )
   }
 }
 
-function mapStateToProps({questions, users, authedUser}, {question}) {
-  const questionAuthor = questions[question.id].author
-  const authorFullName = users[questionAuthor].name
-  const answers = users[authedUser].answers
-  const optionOneVotes = questions[question.id].optionOne.votes
-  const optionTwoVotes = questions[question.id].optionTwo.votes
-  const userAnswer = optionOneVotes.includes(authedUser) ? "optionOne" : "optionTwo"
+function mapStateToProps({questions, users, authedUser, answer},ownprops) {
+  const questionId = ownprops.match.params.id
+  const question = questions[questionId]
+  const optionOneVotes = question.optionOne.votes
+  const optionTwoVotes = question.optionTwo.votes
+
 
   return {
     users,
-    question,
+    questions,
     authedUser,
+    question,
     optionOneVotes,
     optionTwoVotes,
-    authorFullName,
-    userAnswer,
+    userAnswer: optionOneVotes.includes(authedUser) ? 'optionOne' : 'optionTwo',
   }
 }
 

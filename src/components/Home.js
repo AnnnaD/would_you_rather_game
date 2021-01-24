@@ -19,8 +19,8 @@ class Home extends Component {
     return (
       <div className="questions-section">
         <div className="questions_menu">
-          <button onClick={this.handleCategoryChange} value='Unanswered' className={this.state.questionsCategory==='Unanswered'? 'active': ''}>Unanswered</button>
-          <button onClick={this.handleCategoryChange} value='Answered' className={this.state.questionsCategory==='Answered'? 'active': ''}>Answered</button>
+          <button onClick={this.handleCategoryChange} value='Unanswered' className={this.state.questionsCategory==='Unanswered'? 'active_tab': ''}>Unanswered</button>
+          <button onClick={this.handleCategoryChange} value='Answered' className={this.state.questionsCategory==='Answered'? 'active_tab': ''}>Answered</button>
         </div>
         {this.state.questionsCategory === 'Answered'
       ?
