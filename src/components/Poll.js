@@ -12,7 +12,8 @@ class Poll extends Component {
     selectedOpt:'',
     selectedOptName:'',
     clicked:false,
-    toResult: false
+    toResult: false,
+    invalid: false
   }
 
   handleSubmit = (event) => {
@@ -47,8 +48,9 @@ class Poll extends Component {
   }
 
   render() {
+console.log(this.props.isvalid)
+    const {question, users, isvalid}=this.props
 
-    const {question, users}=this.props
     const { id } = question
     const { toResult } =this.state
     const avatar = users[question.author].avatarURL
@@ -57,29 +59,44 @@ if(toResult===true){
   return <Redirect to={`/answered/${id}`} />
 }
 
-
     return (
-      <div className="single-question-container">
-        <h4>{question.author} asks:</h4>
-          <div className="question-options">
-            <div className="photo-container">
-              <img src={avatar} />
+      <div>
+      {
+        (isvalid===true)
+      ?   <div className="single-question-container">
+          <h4>{question.author} asks:</h4>
+            <div className="question-options">
+              <div className="photo-container">
+                <img src={avatar} />
+              </div>
+              <form className="content" onSubmit={this.handleSubmit}>
+                <h5>Would you rather</h5>
+                <input type="radio" name="optionOne" value={this.state.optionOne} onChange={this.handleChange} checked={this.state.selectedOptName===this.state.optionOne}/>{question.optionOne.text}
+                <input type="radio" name="optionTwo" value={this.state.optionTwo} onChange={this.handleChange} checked={this.state.selectedOptName===this.state.optionTwo}/>{question.optionTwo.text}
+                <button disabled={this.isDisabled()}>submit</button>
+              </form>
+              </div>
             </div>
-            <form className="content" onSubmit={this.handleSubmit}>
-              <h5>Would you rather</h5>
-              <input type="radio" name="optionOne" value={this.state.optionOne} onChange={this.handleChange} checked={this.state.selectedOptName===this.state.optionOne}/>{question.optionOne.text}
-              <input type="radio" name="optionTwo" value={this.state.optionTwo} onChange={this.handleChange} checked={this.state.selectedOptName===this.state.optionTwo}/>{question.optionTwo.text}
-              <button disabled={this.isDisabled()}>submit</button>
-            </form>
-            </div>
+    :<div>not found</div>
+
+        }
           </div>
     )
+
   }
 }
 
 function mapStateToProps({questions, users, authedUser, answer}, ownprops) {
   const questionId = ownprops.match.params.id
   const question = questions[questionId]
+
+  if(question === undefined) {
+    return {
+      isvalid: false,
+      question:'',
+      user:''
+    }
+  } else {
   const user = users[authedUser]
 
   return {
@@ -88,8 +105,10 @@ function mapStateToProps({questions, users, authedUser, answer}, ownprops) {
     authedUser,
     question,
     user,
-    answer
+    answer,
+    isvalid:true,
   }
+}
 }
 
 export default connect(mapStateToProps)(Poll)

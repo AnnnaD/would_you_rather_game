@@ -1,6 +1,6 @@
 import React, { Component } from 'react'
 import { connect } from 'react-redux'
-import { Link } from 'react-router-dom'
+import { Link, withRouter, Redirect } from 'react-router-dom'
 import { formatQuestion } from '../utils/_DATA.js'
 import Poll from './Poll'
 import Results from './Results'
@@ -17,32 +17,40 @@ class Question extends Component {
     })
   }
   render() {
+
     console.log(this.props.question.id)
-    const { question, authorAvatar, activeCategory } = this.props
+    const { question, authorAvatar, activeCategory, isvalid } = this.props
+
     const { id } = this.props.question
-    const question_id = id
+
     return (
       <div>
-        <div className="single-question-container">
-          <h4>{question.author} asks:</h4>
-            <div className="question-options">
-              <div className="photo-container">
-              <img src={authorAvatar} alt="author avatar" />
-              </div>
-              <div className="content">
-                <h5>Would you rather</h5>
-                <p>...{question.optionOne.text}...</p>
-                {activeCategory==="Unanswered"
-                ?
-                <Link to={`/questions/${id}`} className="show-pol-btn">show poll</Link>
-                :
-                <Link to={`/answered/${id}`} className="show-pol-btn">show poll</Link>
-              }
-              </div>
+      {isvalid
+      ?
+      <div className="single-question-container">
+        <h4>{question.author} asks:</h4>
+          <div className="question-options">
+            <div className="photo-container">
+            <img src={authorAvatar} alt="author avatar" />
             </div>
-            {this.state.clicked && activeCategory==="Unanswered" ? <Poll /> : null}
-            {this.state.clicked && activeCategory==="Answered" ? <Results /> : null}
-        </div>
+            <div className="content">
+              <h5>Would you rather</h5>
+              <p>...{question.optionOne.text}...</p>
+              {activeCategory==="Unanswered"
+              ?
+              <Link to={`/questions/${id}`} className="show-pol-btn">show poll</Link>
+              :
+              <Link to={`/answered/${id}`} className="show-pol-btn">show poll</Link>
+            }
+            </div>
+          </div>
+          {this.state.clicked && activeCategory==="Unanswered" ? <Poll /> : null}
+          {this.state.clicked && activeCategory==="Answered" ? <Results /> : null}
+      </div>
+      :
+      <p>not found</p>
+    }
+
       </div>
     )
   }
@@ -50,6 +58,11 @@ class Question extends Component {
 
 function mapStateToProps({questions, users, authedUser}, {id}) {
   const question = questions[id]
+  if(question === undefined) {
+    return {
+      isvalid: false,
+    }
+  }else {
   const optionOneText = question['optionOne'].text
   const optionTwoText = question['optionTwo'].text
   const author = questions[id].author
@@ -60,9 +73,11 @@ function mapStateToProps({questions, users, authedUser}, {id}) {
     users,
     questions,
     authedUser,
-    question: question,
-    authorAvatar
+    question: question ? question : null,
+    authorAvatar,
+    isvalid: true,
   }
 }
+}
 
-export default connect(mapStateToProps)(Question)
+export default withRouter(connect(mapStateToProps)(Question))
