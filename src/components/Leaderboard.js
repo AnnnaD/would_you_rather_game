@@ -3,41 +3,42 @@ import { connect } from 'react-redux'
 
 class Leaderboard extends Component {
   render() {
-    console.log(this.props.nameOfUser)
+    console.log(this.props)
+    const { userSummary } = this.props
     return (
       <div>
         <h4>Leaderboard</h4>
-            <div className="leaderboard-section">
-            {this.props.nameOfUser.map((user,index)=>{
-              const name = this.props.users[user].name
-              const avatar = this.props.users[user].avatarURL
-              const answeredByUser = this.props.users[user].answers
-              const answeredByUserNum = Object.keys(answeredByUser)
-              const numberAnswered = answeredByUserNum.length
-              const createdByUser = this.props.users[user].questions.length
-              return (
-                <div key={index} className="leader-card">
-                  {name}
-                  <img src={avatar} />
-                  <p>Answered questions {numberAnswered}</p>
-                  <p>Created questions {createdByUser}</p>
-                  <p>Score: {numberAnswered + createdByUser}</p>
-                </div>
+        {userSummary
+          .map((user)=>{
+            return (
+              <div key={user.id} className="leader-card">
+                {user.name}
+                <img src={user.avatar} />
+                <p>Answered questions {user.answeredByUser}</p>
+                <p>Created questions {user.createdByUser}</p>
+                <p>Score:{user.score}</p>
+              </div>
               )
             })}
-          </div>
       </div>
     )
   }
 }
 function mapStateToProps ({ questions, authedUser, users }) {
-  const nameOfUser = Object.keys(users)
+  const userSummary = Object.values(users).map((user)=>({
+    id: user.id,
+    name: user.name,
+    avatar: user.avatarURL,
+    answeredByUser: Object.keys(user.answers).length,
+    createdByUser: user.questions.length,
+    score: user.questions.length + Object.keys(user.answers).length
+  })).sort((uSa,uSb) => uSb.score - uSa.score)
 
   return {
-  users,
-  questions,
-  authedUser,
-  nameOfUser
+    users,
+    questions,
+    authedUser,
+    userSummary,
   }
 }
 export default connect(mapStateToProps)(Leaderboard)

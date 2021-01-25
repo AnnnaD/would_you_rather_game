@@ -4,11 +4,11 @@ import { connect } from 'react-redux'
 class Results extends Component {
   render() {
 
-    const { question, optionOneVotes, optionTwoVotes, userAnswer } = this.props
+    const { question, optionOneVotes, optionTwoVotes, userAnswer, totalVotes } = this.props
 
-    const optionOneNumber = optionOneVotes.length/3*100
+    const optionOneNumber = optionOneVotes.length/totalVotes*100
     const optionOneNumberRounded = optionOneNumber.toFixed(1)
-    const optionTwoNumber = optionTwoVotes.length/3*100
+    const optionTwoNumber = optionTwoVotes.length/totalVotes*100
     const optionTwoNumberRounded = optionTwoNumber.toFixed(1)
 
     return (
@@ -16,13 +16,13 @@ class Results extends Component {
         <div className={userAnswer==='optionOne' ? 'user-vote' : ''}>
           <div className={`vote-badge ${userAnswer==='optionOne'? 'visible':'hidden'}`}>your vote</div>
           <p>Would you rather {question.optionOne.text}</p>
-          <p>{optionOneVotes.length}</p>
+          <p>{optionOneVotes.length} of {totalVotes}</p>
           <p>{optionOneNumberRounded}%</p>
         </div>
         <div className={userAnswer==='optionTwo' ? 'user-vote' : ''}>
           <div className={`vote-badge ${userAnswer==='optionTwo'? 'visible':'hidden'}`}>your vote</div>
           <p>Would you rather {question.optionTwo.text}</p>
-          <p>{optionTwoVotes.length}</p>
+          <p>{optionTwoVotes.length} of {totalVotes}</p>
           <p>{optionTwoNumberRounded}%</p>
         </div>
       </div>
@@ -35,6 +35,7 @@ function mapStateToProps({questions, users, authedUser, answer},ownprops) {
   const question = questions[questionId]
   const optionOneVotes = question.optionOne.votes
   const optionTwoVotes = question.optionTwo.votes
+  const totalVotes = optionOneVotes.length + optionTwoVotes.length
 
 
   return {
@@ -44,6 +45,7 @@ function mapStateToProps({questions, users, authedUser, answer},ownprops) {
     question,
     optionOneVotes,
     optionTwoVotes,
+    totalVotes,
     userAnswer: optionOneVotes.includes(authedUser) ? 'optionOne' : 'optionTwo',
   }
 }

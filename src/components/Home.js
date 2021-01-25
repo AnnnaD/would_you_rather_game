@@ -15,7 +15,10 @@ class Home extends Component {
     })
   }
   render() {
-    console.log(this.props.answers)
+    console.log(this.props.questions)
+    console.log(this.props.answersObj)
+
+
     return (
       <div className="questions-section">
         <div className="questions_menu">
@@ -26,7 +29,9 @@ class Home extends Component {
       ?
         <div>
           <ul>
-            {this.props.answers.map((id) => (
+            {this.props.questionsIds
+              .filter((id)=> this.props.answers.includes(id))
+              .map((id) => (
               <li key={id}>
                 <Question id={id} activeCategory={this.state.questionsCategory}/>
               </li>
@@ -36,9 +41,11 @@ class Home extends Component {
         :
         <div>
           <ul>
-            {this.props.questionsIds.map((obj) => (
-              <li key={obj.id}>
-                <Question id={obj.id} activeCategory={this.state.questionsCategory}/>
+            {this.props.questionsIds
+              .filter((id)=> !this.props.answers.includes(id))
+              .map((id) => (
+              <li key={id}>
+                <Question id={id} activeCategory={this.state.questionsCategory}/>
               </li>
             ))}
           </ul>
@@ -51,13 +58,18 @@ class Home extends Component {
 
 function mapStateToProps({questions, users, authedUser}) {
   const answersObj = users[authedUser].answers
-  const answersIds = Object.keys(answersObj).sort((a,b) => answersObj[b].timestamp - answersObj[a].timestamp)
-  const unanswered = Object.values(questions).filter((q)=>!answersIds.includes(q.id))
+  const answersIds = Object.keys(answersObj)
+  const sorted =  Object.keys(questions).sort((a,b) => questions[b].timestamp - questions[a].timestamp)
+
+
+
   return {
-    questionsIds: unanswered,
+    questionsIds: sorted,
     answers: answersIds,
     users,
     authedUser,
+    answersObj,
+    questions,
   }
 }
 
